@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
-use function Symfony\Component\String\b;
 
 class TaskController extends Controller
 {
@@ -34,7 +33,7 @@ class TaskController extends Controller
         $task->save();
 
         return new JsonResponse(
-            null,
+            new TaskResource($task),
             Response::HTTP_CREATED
         );
     }
