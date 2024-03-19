@@ -1,0 +1,592 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Bluecrest Application Exercise",
+    "description": "Application exercise for Bluecrest Health by Benedek Peter Burgess",
+    "contact": {
+      "email": "benedekb97@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://beniburgess.co.uk/api"
+    },
+    {
+      "url": "http://beniburgess.co.uk/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Authentication"
+    },
+    {
+      "name": "tasks",
+      "description": "Tasks API"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Log in with your user",
+        "description": "Log in with your user and receive a JWT token for further API access",
+        "requestBody": {
+          "description": "User information necessary for logging in",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Fetch user data",
+        "description": "Fetch user data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Refreshes JWT token",
+        "description": "Refreshes JWT token",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Log out",
+        "description": "Logs out the currently authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "List tasks",
+        "description": "Lists tasks in the database with pagination",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "Page number for pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Create task",
+        "description": "Create a task",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Show task",
+        "description": "Fetches task with the given ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Task ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Update task",
+        "description": "Updates task with the given ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Task ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Delete task",
+        "description": "Deletes task with the given ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Task ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          }
+        }
+      },
+      "Auth": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT token"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Amount of time in seconds in which the token will become invalid"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "email_verified_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "label": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TaskList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "first": {
+                "type": "string",
+                "format": "uri"
+              },
+              "last": {
+                "type": "string",
+                "format": "uri"
+              },
+              "prev": {
+                "type": "string",
+                "format": "uri",
+                "nullable": true
+              },
+              "next": {
+                "type": "string",
+                "format": "uri",
+                "nullable": true
+              }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "current_page": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "from": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "last_page": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Link"
+                }
+              },
+              "path": {
+                "type": "string",
+                "format": "uri"
+              },
+              "per_page": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "to": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "total": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "in_progress",
+              "completed",
+              "failed"
+            ]
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateTask": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Must be after today's date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "in_progress",
+              "completed",
+              "failed"
+            ]
+          }
+        }
+      },
+      "UpdateTask": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Must be after today's date",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "in_progress",
+              "completed",
+              "failed"
+            ],
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
