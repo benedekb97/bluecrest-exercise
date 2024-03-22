@@ -25,6 +25,7 @@
   - Used an [online swagger editor](https://forge.etsi.org/swagger/editor/) to create the necessary openapi file 
 - After this I made some adjustments to the API to better fit REST specifications
 - Finally I wrote some Feature tests to test the API endpoints. 
+  - Here some fixes to the codebase were required as I uncovered some issues with the update endpoint and validation
 
 ### Documentation used
 
