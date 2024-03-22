@@ -6,7 +6,7 @@ use App\Models\Enums\TaskStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateTaskRequest extends FormRequest
+class UpdateTaskRequest extends StoreTaskRequest
 {
     public function rules(): array
     {

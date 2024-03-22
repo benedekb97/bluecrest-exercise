@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Enums\TaskStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTaskRequest extends FormRequest
 {
@@ -24,8 +26,8 @@ class StoreTaskRequest extends FormRequest
         return [
             'title' => 'required',
             'description' => '',
-            'status' => '',
-            'due_date' => 'date|after:today'
+            'status' => ['sometimes', Rule::enum(TaskStatus::class)],
+            'due_date' => 'required|date|after:today'
         ];
     }
 }

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
+use function Symfony\Component\String\b;
 
 class TaskController extends Controller
 {
@@ -28,7 +29,7 @@ class TaskController extends Controller
         $task->title = $validatedRequest['title'];
         $task->due_date = $validatedRequest['due_date'] ?? null;
         $task->description = $validatedRequest['description'] ?? null;
-        $task->status = TaskStatus::DRAFT;
+        $task->status = $validatedRequest['status'] ?? TaskStatus::DRAFT;
 
         $task->save();
 
@@ -38,8 +39,14 @@ class TaskController extends Controller
         );
     }
 
-    public function show(string $id): JsonResource
+    public function show(string $id): JsonResource|JsonResponse
     {
+        $task = Task::all()->find($id);
+
+        if (null === $task) {
+            return $this->generateNotFoundResponse();
+        }
+
         return new TaskResource(Task::all()->find($id));
     }
 
@@ -48,13 +55,13 @@ class TaskController extends Controller
         $task = Task::all()->find($id);
 
         if (null === $task) {
-            abort(404);
+            return $this->generateNotFoundResponse();
         }
 
         $validatedRequest = $request->validated();
 
         $task->title = $validatedRequest['title'] ?? $task->title;
-        $task->description = $validatedRequest['description'] ?? $task->description;
+        $task->description = $request->has('description') ? $validatedRequest['description'] : $task->description;
         $task->due_date = $validatedRequest['due_date'] ?? $task->due_date;
         $task->status = $validatedRequest['status'] ?? $task->status;
 
@@ -68,11 +75,21 @@ class TaskController extends Controller
         $task = Task::all()->find($id);
 
         if (null === $task) {
-            abort(404);
+            return $this->generateNotFoundResponse();
         }
 
         $task->delete();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    private function generateNotFoundResponse(): JsonResponse
+    {
+        return new JsonResponse(
+            [
+                'message' => 'The requested resource could not be found!',
+            ],
+            Response::HTTP_NOT_FOUND
+        );
     }
 }

@@ -17,7 +17,6 @@ Route::controller(TaskController::class)
     });
 
 Route::controller(AuthenticationController::class)
-    ->as('auth.')
     ->prefix('auth')
     ->group(static function () {
         Route::middleware('auth:api')->group(static function () {

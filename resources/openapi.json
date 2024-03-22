@@ -11,9 +11,6 @@
   "servers": [
     {
       "url": "https://beniburgess.co.uk/api"
-    },
-    {
-      "url": "http://beniburgess.co.uk/api"
     }
   ],
   "tags": [
@@ -248,13 +245,21 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Task"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
             "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       },
@@ -296,13 +301,21 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Task"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
             "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       },
@@ -334,6 +347,9 @@
           },
           "401": {
             "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -542,6 +558,7 @@
           },
           "status": {
             "type": "string",
+            "nullable": true,
             "enum": [
               "draft",
               "in_progress",
